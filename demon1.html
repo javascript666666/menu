@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			ul{
+				list-style: none;
+				display: none;
+			}
+			.list ul.active{
+				display: block;
+			}
+			.list{
+				width: 700px;
+				height: 800px;
+				margin: 0 auto;
+				background: url(image/bg.png) no-repeat;
+				background-size: 100% 100%;
+				display: block;
+			}
+			div{
+				position: absolute;
+				left: 4px;
+				top: 20px;
+				border-left: 2px dotted pink;
+				height:100%;
+			}
+			ul li span {
+				display: block;
+				line-height: 32px;
+				padding-left: 15px;
+			}
+			ul li span.add{
+				background: url(./image/icon.png) no-repeat left -30px;
+			}
+			ul li span.active {
+				background: url(./image/icon.png) no-repeat 0px 11px;
+			}
+			li{
+				position: relative;
+			}
+		</style>
+	</head>
+	<body>
+		<ul class="list">
+			
+		</ul>
+		<script>
+			var data = [
+				{
+					title: '第一级菜单',
+					child: [
+						{
+							title: '第二级菜单',
+						},
+						{
+							title: '第二级菜单',              //div
+							child: [
+								{
+									title: '第三级菜单',
+								},
+								{
+									title: '第三级菜单',      //div
+									child: [
+										{
+											title: '第四级菜单'
+										},
+										{
+											title: '第四级菜单'
+										},
+										{
+											title: '第四级菜单'
+										}
+									]
+								},
+								{
+									title: '第三级菜单',
+									child: [
+										{
+											title: '第四级菜单'
+										},
+										{
+											title: '第四级菜单'
+										},
+										{
+											title: '第四级菜单'
+										}
+									]
+								}
+							]
+						},
+						{
+							title: '第二级菜单',
+							child: [
+								{
+									title: '第三级菜单',
+								},
+								{
+									title: '第三级菜单',
+									child: [
+										{
+											title: '第四级菜单'
+										},
+										{
+											title: '第四级菜单'
+										},
+										{
+											title: '第四级菜单'
+										}
+									]
+								},
+								{
+									title: '第三级菜单',
+									child: [
+										{
+											title: '第四级菜单'
+										},
+										{
+											title: '第四级菜单'
+										},
+										{
+											title: '第四级菜单'
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					title: '第一级菜单',
+					child: [
+						{
+							title: '第二级菜单',
+						},
+						{
+							title: '第二级菜单',
+							child: [
+								{
+									title: '第三级菜单',
+								},
+								{
+									title: '第三级菜单',
+									child: [
+										{
+											title: '第四级菜单'
+										},
+										{
+											title: '第四级菜单'
+										},
+										{
+											title: '第四级菜单'
+										}
+									]
+								},
+								{
+									title: '第三级菜单',
+									child: [
+										{
+											title: '第四级菜单'
+										},
+										{
+											title: '第四级菜单'
+										},
+										{
+											title: '第四级菜单'
+										}
+									]
+								}
+							]
+						},
+						{
+							title: '第二级菜单',
+							child: [
+								{
+									title: '第三级菜单',
+								},
+								{
+									title: '第三级菜单',
+									child: [
+										{
+											title: '第四级菜单'
+										},
+										{
+											title: '第四级菜单'
+										},
+										{
+											title: '第四级菜单'
+										}
+									]
+								},
+							]
+						}
+					]
+				},{
+					title: '第一级菜单',
+					child: [
+						{
+							title: '第二级菜单',
+						},
+						{
+							title: '第二级菜单',
+						},
+						{
+							title: '第二级菜单',
+							child: [
+								{
+									title: '第三级菜单',
+								},
+								{
+									title: '第三级菜单',
+								},
+							]
+						}
+					]
+				}
+			];
+			
+			var list = document.querySelector('.list');
+			function createEle1 (list,data) {
+				for (var i=0; i<data.length; i++) {
+					//创建 添加ul 下的li
+					var li = document.createElement('li');
+					list.appendChild(li);
+					//创建 span  给span 添加点击事件   className   innerHTML  添加到li下
+					var span = document.createElement('span');
+					if (data[i].child) {
+						span.classList.add('add');
+						span.onclick = function(){
+							var nextSibling = this.nextElementSibling;
+							var parentParent = this.parentNode.parentNode;
+							var uls = parentParent.getElementsByTagName('ul');
+							var spans = parentParent.getElementsByTagName('span');
+
+							for(var j=0; j<spans.length; j++){
+								if (spans[j] != this) {
+									spans[j].classList.remove('active');
+								}
+							}
+							for (var i=0; i<uls.length; i++) {
+								if (uls[i] != nextSibling) {
+									uls[i].classList.remove('active');
+								}
+							}
+							this.classList.toggle('active');
+							this.nextElementSibling.classList.toggle('active');
+						}
+					}
+					span.innerHTML = data[i].title;
+					var lis = list.children;
+					lis[i].appendChild(span);
+					
+					//如果data[i]下的child不为空    创建ul 添加ul到li的后面       就重新定义 ul  和 date   然后用函数递归去生成     
+					if (data[i].child) {
+						var ul = document.createElement('ul');
+						lis[i].appendChild(ul);
+						var lis = list.children;
+						createEle1(lis[i].lastElementChild,data[i].child);
+					}
+					
+					//创建div  添加在lis不是最后的li  并且li下面的child不为空对象
+					if ( i != data.length-1 && data[i].child)  {
+						var div = document.createElement('div');
+						lis[i].appendChild(div);
+					}
+				}
+			}
+			createEle1(list,data);
+		</script>
+	</body>
+</html>
